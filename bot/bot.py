@@ -24,6 +24,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 FEEDS_FILE = Path(os.environ.get("FEEDS_FILE") or ROOT / "bot" / "feeds.json")
 STATE_FILE = ROOT / "bot" / "state.json"
+QUEUE_FILE = ROOT / "bot" / "queue.txt"
+QUEUE_HEADER = (
+    "# Add one deal per line:  link | title | price (optional) | image URL (optional)\n"
+    "# Example:\n"
+    "# https://www.amazon.in/dp/B09N3ZNHTY | boAt Airdopes 141 Earbuds | 1099\n"
+    "# Lines you add are posted on the next run (or right away when you save this file),\n"
+    "# then removed from here automatically.\n"
+)
 DEALS_FILE = ROOT / "site" / "deals.json"
 
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
@@ -243,6 +251,31 @@ def post_to_telegram(deal):
     tg("sendMessage", {**base, "text": text, "disable_web_page_preview": True})
 
 
+def read_queue():
+    """Hand-picked deals: 'link | title | price | image' per line. Returns items and clears the file."""
+    if not QUEUE_FILE.exists():
+        return []
+    items = []
+    for n, raw in enumerate(QUEUE_FILE.read_text(encoding="utf-8").splitlines()):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = [p.strip() for p in line.split("|")]
+        link = parts[0]
+        if not link.startswith("http"):
+            log("  queue: skipping line (no http link):", line[:60])
+            continue
+        title = parts[1] if len(parts) > 1 and parts[1] else ""
+        price = parts[2] if len(parts) > 2 else ""
+        image = parts[3] if len(parts) > 3 and parts[3].startswith("http") else ""
+        if price and not re.search(r"₹|rs|inr", price, re.I):
+            price = "₹" + price
+        items.append({"id": f"queue:{n}:{link}:{time.time()}", "title": title, "link": link,
+                      "desc": price, "images": [image] if image else [], "queued": True})
+    QUEUE_FILE.write_text(QUEUE_HEADER, encoding="utf-8")
+    return items
+
+
 def load_json(path, default):
     try:
         return json.loads(path.read_text())
@@ -276,19 +309,28 @@ def main():
             seen.add(key)
         candidates = candidates[:3]
 
+    queued = read_queue()
+    if queued:
+        log(f"Queue: {len(queued)} hand-picked deal(s)")
+    candidates = [(hashlib.sha1(q["id"].encode()).hexdigest()[:16], q) for q in queued] + candidates
+
     posted = []
     for key, it in candidates:
         seen.add(key)
-        if len(posted) >= MAX_POSTS:
+        from_queue = it.get("queued", False)
+        if len(posted) >= MAX_POSTS and not from_queue:
             continue
-        title = clean_title(it["title"])
+        title = clean_title(it["title"]) if it["title"] else ""
         if re.search(r"\b(expired|sold out|out of stock)\b", title, re.I):
             continue
         url, merchant = find_merchant_url(it)
         if not url:
+            log("  skip (not a supported store link):", it["link"][:80])
             continue
+        if not title:
+            title = f"Deal on {merchant}"
         canon = canonical(url)
-        if canon in seen:
+        if canon in seen and not from_queue:
             continue
         link, monetized = monetize(url, merchant)
         if REQUIRE_AFFILIATE and not monetized:

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:          # lets you press "Run workflow" manually
   push:
     branches: [main]
-    paths: ["site/**", ".github/workflows/**"]
+    paths: ["site/**", ".github/workflows/**", "bot/queue.txt"]
 
 permissions:
   contents: write
@@ -35,13 +35,16 @@ jobs:
           FLIPKART_AFFID: ${{ secrets.FLIPKART_AFFID }}
           AFFILIATE_TEMPLATE: ${{ secrets.AFFILIATE_TEMPLATE }}
           MAX_POSTS_PER_RUN: "5"
+          # "0" = also post deals without your affiliate tag (use until your accounts are approved).
+          # Change to "1" afterwards so only monetized deals are posted.
+          REQUIRE_AFFILIATE: "0"
         run: python bot/bot.py
 
       - name: Save state
         run: |
           git config user.name "idealdeal-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add bot/state.json site/deals.json
+          git add bot/state.json bot/queue.txt site/deals.json
           git diff --cached --quiet || (git commit -m "deals update [skip ci]" && git push)
 
       - uses: actions/configure-pages@v5

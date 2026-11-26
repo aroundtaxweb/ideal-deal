@@ -1,5 +1,3 @@
 [
-  { "name": "DesiDime", "url": "https://www.desidime.com/new.xml" },
-  { "name": "r/dealsindia", "url": "https://www.reddit.com/r/dealsindia/new/.rss" },
-  { "name": "r/IndianGaming Deals", "url": "https://www.reddit.com/r/IndianGaming/search.rss?q=flair%3ADeal&restrict_sr=1&sort=new" }
+  { "name": "IndiaFreeStuff", "url": "https://www.indiafreestuff.in/rss.php" }
 ]

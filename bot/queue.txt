@@ -1,0 +1,5 @@
+# Add one deal per line:  link | title | price (optional) | image URL (optional)
+# Example:
+# https://www.amazon.in/dp/B09N3ZNHTY | boAt Airdopes 141 Earbuds | 1099
+# Lines you add are posted on the next run (or right away when you save this file),
+# then removed from here automatically.
