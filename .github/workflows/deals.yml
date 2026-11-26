@@ -1,0 +1,60 @@
+name: IdealDeal auto-poster
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 min (GitHub may delay runs a few minutes)
+  workflow_dispatch:          # lets you press "Run workflow" manually
+  push:
+    branches: [main]
+    paths: ["site/**", ".github/workflows/**"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: idealdeal
+  cancel-in-progress: false
+
+jobs:
+  post-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Find deals and post to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          AMAZON_TAG: ${{ secrets.AMAZON_TAG }}
+          FLIPKART_AFFID: ${{ secrets.FLIPKART_AFFID }}
+          AFFILIATE_TEMPLATE: ${{ secrets.AFFILIATE_TEMPLATE }}
+          MAX_POSTS_PER_RUN: "5"
+        run: python bot/bot.py
+
+      - name: Save state
+        run: |
+          git config user.name "idealdeal-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add bot/state.json site/deals.json
+          git diff --cached --quiet || (git commit -m "deals update [skip ci]" && git push)
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: post-and-build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

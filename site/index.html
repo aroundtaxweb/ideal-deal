@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IdealDeal — Verified deals, posted the moment they drop</title>
+<meta name="description" content="IdealDeal finds the best price drops and loot deals across India's top stores and posts them live on Telegram.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%237c5cff'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle'%3E%E2%9A%A1%3C/text%3E%3C/svg%3E">
+<meta property="og:title" content="IdealDeal — Live deals, curated automatically">
+<meta property="og:description" content="Real discounts. Posted instantly on Telegram.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080c; --bg2:#0d0f16; --card:rgba(255,255,255,.04); --line:rgba(255,255,255,.08);
+  --text:#f4f5f8; --muted:#9aa0b4; --accent:#7c5cff; --accent2:#22d3ee; --gold:#f5c26b; --green:#34d399;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.glow{position:fixed;inset:0;pointer-events:none;z-index:0;background:
+  radial-gradient(600px 400px at 15% -5%,rgba(124,92,255,.28),transparent 60%),
+  radial-gradient(500px 380px at 90% 10%,rgba(34,211,238,.16),transparent 60%),
+  radial-gradient(700px 500px at 50% 110%,rgba(245,194,107,.10),transparent 60%)}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 24px}
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);background:rgba(7,8,12,.65);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.02em}
+.logo i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-style:normal;font-size:16px}
+.logo span{color:var(--gold)}
+.links{display:flex;gap:30px;font-size:14px;color:var(--muted);font-weight:500}
+.links a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid transparent;cursor:pointer;transition:.25s}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#5b8cff);color:#fff;box-shadow:0 8px 30px -8px rgba(124,92,255,.7)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 36px -8px rgba(124,92,255,.85)}
+.btn-ghost{border-color:var(--line);background:var(--card);color:var(--text)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.25)}
+.hero{padding:96px 0 56px;text-align:center}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:13px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(52,211,153,.7);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+h1{font-size:clamp(40px,7vw,78px);line-height:1.03;letter-spacing:-.04em;font-weight:800;margin:26px auto 20px;max-width:900px}
+h1 em{font-family:'Instrument Serif',serif;font-weight:400;font-style:italic;background:linear-gradient(120deg,var(--gold),#ffe3b0,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.02em}
+.sub{font-size:18px;color:var(--muted);max-width:600px;margin:0 auto 34px}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden;max-width:720px;margin:60px auto 0}
+.stats div{background:var(--bg2);padding:22px 12px}
+.stats b{display:block;font-size:30px;font-weight:800;letter-spacing:-.03em}
+.stats span{font-size:13px;color:var(--muted)}
+section{padding:70px 0}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.16em;color:var(--accent2);font-weight:700}
+h2{font-size:clamp(28px,4vw,42px);letter-spacing:-.03em;margin:10px 0 8px;font-weight:800}
+.lead{color:var(--muted);max-width:560px}
+.toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:30px 0 26px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.chip:hover{color:var(--text)}
+.chip.on{background:var(--text);color:#0a0a0f;border-color:var(--text)}
+.search{background:var(--card);border:1px solid var(--line);color:var(--text);padding:10px 16px;border-radius:999px;font:inherit;font-size:14px;min-width:220px;outline:none}
+.search:focus{border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.card{display:flex;flex-direction:column;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid var(--line);border-radius:20px;overflow:hidden;transition:.3s;position:relative}
+.card:hover{transform:translateY(-6px);border-color:rgba(124,92,255,.5);box-shadow:0 24px 50px -20px rgba(124,92,255,.45)}
+.thumb{aspect-ratio:4/3;background:#fff;display:grid;place-items:center;overflow:hidden;position:relative}
+.thumb img{width:100%;height:100%;object-fit:contain;padding:14px}
+.thumb.ph{background:linear-gradient(135deg,#1a1c2b,#262a40);font-size:44px}
+.tag{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:999px;background:rgba(7,8,12,.8);backdrop-filter:blur(8px);font-size:11px;font-weight:700;color:var(--gold);text-transform:capitalize}
+.body{padding:18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.src{font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+.title{font-weight:600;font-size:15px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.price{font-size:20px;font-weight:800;color:var(--green);letter-spacing:-.02em}
+.card .btn{margin-top:auto;justify-content:center;background:var(--text);color:#0a0a0f;width:100%}
+.card .btn:hover{background:var(--gold)}
+.empty{grid-column:1/-1;text-align:center;padding:70px 20px;color:var(--muted);border:1px dashed var(--line);border-radius:20px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:34px}
+.step{padding:28px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+.step .n{font-family:'Instrument Serif',serif;font-size:44px;color:var(--gold);line-height:1}
+.step h3{margin:14px 0 6px;font-size:18px}
+.step p{color:var(--muted);font-size:14px}
+.banner{margin:20px 0;padding:56px 32px;border-radius:28px;text-align:center;border:1px solid var(--line);background:
+  radial-gradient(500px 220px at 50% 0%,rgba(124,92,255,.35),transparent 70%),var(--bg2)}
+.banner h2{margin-top:0}
+.banner p{color:var(--muted);margin:0 auto 26px;max-width:480px}
+footer{border-top:1px solid var(--line);padding:40px 0;margin-top:50px;font-size:13px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px}
+footer p{max-width:620px}
+.reveal{opacity:0;transform:translateY(18px);animation:in .7s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+@media(max-width:720px){.links{display:none}.hero{padding-top:60px}.search{width:100%}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<nav><div class="wrap">
+  <a href="#" class="logo"><i>⚡</i>Ideal<span>Deal</span></a>
+  <div class="links"><a href="#deals">Live deals</a><a href="#how">How it works</a><a href="#join">Join</a></div>
+  <a class="btn btn-primary" data-tg href="#">Join Telegram</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="pill reveal"><span class="dot"></span><span id="liveText">Live — checking for fresh deals</span></div>
+  <h1 class="reveal" style="animation-delay:.08s">Stop overpaying. <em>Catch the drop</em> before it's gone.</h1>
+  <p class="sub reveal" style="animation-delay:.16s">We scan India's top stores around the clock and push the best price drops straight to Telegram — no spam, no fluff, just deals worth your money.</p>
+  <div class="cta reveal" style="animation-delay:.24s">
+    <a class="btn btn-primary" data-tg href="#">✈️ Join the Telegram channel</a>
+    <a class="btn btn-ghost" href="#deals">Browse live deals ↓</a>
+  </div>
+  <div class="stats reveal" style="animation-delay:.34s">
+    <div><b id="statTotal">—</b><span>Deals tracked</span></div>
+    <div><b id="statToday">—</b><span>Added today</span></div>
+    <div><b>24/7</b><span>Automated scanning</span></div>
+  </div>
+</div></header>
+
+<section id="deals"><div class="wrap">
+  <div class="eyebrow">Fresh off the radar</div>
+  <h2>Today's best deals</h2>
+  <p class="lead">Updated automatically. Prices change fast — if it's live, grab it.</p>
+  <div class="toolbar">
+    <div class="chips" id="chips"></div>
+    <input class="search" id="q" type="search" placeholder="Search deals…" aria-label="Search deals">
+  </div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <div class="eyebrow">Behind the scenes</div>
+  <h2>Fully automated. Zero noise.</h2>
+  <div class="steps">
+    <div class="step"><div class="n">01</div><h3>We scan</h3><p>Our system monitors deal sources across leading Indian retailers every 30 minutes.</p></div>
+    <div class="step"><div class="n">02</div><h3>We filter</h3><p>Duplicates, stale offers and low-quality listings are dropped before you ever see them.</p></div>
+    <div class="step"><div class="n">03</div><h3>You save</h3><p>Deals land on Telegram and this page instantly. One tap and you're at the store.</p></div>
+  </div>
+</div></section>
+
+<section id="join"><div class="wrap">
+  <div class="banner">
+    <h2>Never miss a loot deal again.</h2>
+    <p>Join thousands of smart shoppers getting alerts the moment prices fall.</p>
+    <a class="btn btn-primary" data-tg href="#">✈️ Join on Telegram — it's free</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div><div class="logo" style="margin-bottom:10px"><i>⚡</i>Ideal<span>Deal</span></div>
+  <p><b>Affiliate disclosure:</b> IdealDeal participates in affiliate programs. When you buy through our links we may earn a small commission at no extra cost to you. Prices and availability are fetched automatically and can change without notice — always confirm on the store's page before buying.</p></div>
+  <div>© <span id="yr"></span> idealdeal.shop</div>
+</div></footer>
+
+<script>
+/* ====== EDIT THESE ====== */
+const CONFIG = {
+  telegram: "https://t.me/allidealdeal",   // your public channel link
+  dealsUrl: "deals.json"
+};
+/* ======================== */
+
+document.querySelectorAll('[data-tg]').forEach(a=>{a.href=CONFIG.telegram;a.target="_blank";a.rel="noopener"});
+document.getElementById('yr').textContent=new Date().getFullYear();
+
+const EMOJI={electronics:"📱",fashion:"👕",home:"🏠",beauty:"💄",grocery:"🛒",gaming:"🎮",travel:"✈️",general:"🏷️"};
+let deals=[], cat="all", term="";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function ago(iso){
+  const m=Math.max(1,Math.round((Date.now()-new Date(iso))/60000));
+  if(m<60)return m+"m ago"; const h=Math.round(m/60);
+  if(h<24)return h+"h ago"; return Math.round(h/24)+"d ago";
+}
+function render(){
+  const list=deals.filter(d=>(cat==="all"||d.category===cat)&&(!term||d.title.toLowerCase().includes(term)));
+  $('grid').innerHTML=list.length?list.map(d=>`
+    <article class="card">
+      <div class="thumb ${d.image?'':'ph'}">${d.image?`<img loading="lazy" src="${esc(d.image)}" alt="" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('ph');this.replaceWith(document.createTextNode('${EMOJI[d.category]||'🏷️'}'))">`:EMOJI[d.category]||'🏷️'}
+        <span class="tag">${esc(d.category)}</span></div>
+      <div class="body">
+        <div class="src"><span>${esc(d.source||'')}</span><span>${ago(d.posted_at)}</span></div>
+        <div class="title">${esc(d.title)}</div>
+        ${d.price?`<div class="price">${esc(d.price)}</div>`:''}
+        <a class="btn" href="${esc(d.link)}" target="_blank" rel="sponsored nofollow noopener">Grab this deal →</a>
+      </div>
+    </article>`).join(''):`<div class="empty">No deals match yet — new ones arrive every 30 minutes. Join Telegram to get them instantly.</div>`;
+}
+function chips(){
+  const cats=["all",...new Set(deals.map(d=>d.category))];
+  $('chips').innerHTML=cats.map(c=>`<button class="chip ${c===cat?'on':''}" data-c="${c}">${c==='all'?'All':(EMOJI[c]||'')+' '+c[0].toUpperCase()+c.slice(1)}</button>`).join('');
+  $('chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{cat=b.dataset.c;chips();render()});
+}
+$('q').addEventListener('input',e=>{term=e.target.value.trim().toLowerCase();render()});
+
+fetch(CONFIG.dealsUrl+"?t="+Date.now()).then(r=>r.json()).then(j=>{
+  deals=(j.deals||[]).sort((a,b)=>new Date(b.posted_at)-new Date(a.posted_at));
+  const today=new Date().toDateString();
+  $('statTotal').textContent=(j.total_tracked||deals.length).toLocaleString('en-IN');
+  $('statToday').textContent=deals.filter(d=>new Date(d.posted_at).toDateString()===today).length;
+  $('liveText').textContent=deals.length?`Live — last deal ${ago(deals[0].posted_at)}`:'Live — scanning for deals';
+  chips();render();
+}).catch(()=>{ $('grid').innerHTML='<div class="empty">Deals are loading… check back in a moment.</div>' });
+</script>
+</body>
+</html>
